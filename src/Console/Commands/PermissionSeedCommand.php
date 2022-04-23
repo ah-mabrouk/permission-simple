@@ -1,0 +1,53 @@
+<?php
+
+namespace Mabrouk\PermissionSimple\Console\Commands;
+
+use Illuminate\Console\Command;
+use Database\Seeders\RoleableSeeder;
+
+class PermissionSeedCommand extends Command
+{
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'permission:seed';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Seed Permission according to current routes and configurations';
+
+    /**
+     * Create a new command instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
+     * Execute the console command.
+     *
+     * @return int
+     */
+    public function handle()
+    {
+        $this->info('Seeding Permission Simple package data...');
+
+        $currentTranslationNamespace = config('translatable.translation_models_path');
+
+        config(['translatable.translation_models_path' => 'Mabrouk\PermissionSimple\Models']);
+
+        $this->call('db:seed', ['--class' => RoleableSeeder::class]);
+
+        config(['translatable.translation_models_path' => $currentTranslationNamespace]);
+
+        return Command::SUCCESS;
+    }
+}
